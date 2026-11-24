@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:pivotX="54" android:pivotY="54" android:rotation="27">
+        <!-- Endpin and sloping shoulders of the double bass. -->
+        <path android:strokeColor="#E4C9A5" android:strokeWidth="2" android:strokeLineCap="round"
+            android:pathData="M54,76 L54,85" />
+        <path android:fillColor="#F3A75F" android:strokeColor="#FFCF92" android:strokeWidth="1.25"
+            android:pathData="M54,44 C50,44 48,46 44,49 C40,52 39,55 41,58 C43,61 43,63 40,66 C36,70 37,75 42,78 C45,80 50,81 54,81 C58,81 63,80 66,78 C71,75 72,70 68,66 C65,63 65,61 67,58 C69,55 68,52 64,49 C60,46 58,44 54,44 Z" />
+        <path android:fillColor="#D97D3C"
+            android:pathData="M54,46 C58,46 60,48 63,50 C66,52 67,55 65,58 C63,61 63,64 66,67 C70,71 68,75 65,77 C62,79 57,80 54,80 Z" />
+        <!-- Scroll, pegs, fingerboard, bridge and tailpiece. -->
+        <path android:fillColor="#FFCF92"
+            android:pathData="M51,44 L52,31 L50,27 C49,23 52,21 55,22 C58,23 58,26 56,28 L56,44 Z" />
+        <path android:strokeColor="#FFCF92" android:strokeWidth="1.7" android:strokeLineCap="round"
+            android:pathData="M50,29 H58 M49,32 H59" />
+        <path android:fillColor="#37251E" android:pathData="M52.5,32 H55.5 L57,59 H51 Z M49,69 H59 L55.5,78 H52.5 Z" />
+        <path android:strokeColor="#FFE3BD" android:strokeWidth="1.7" android:strokeLineCap="round"
+            android:pathData="M49,64 Q54,62 59,64" />
+        <path android:strokeColor="#FFF2DC" android:strokeWidth="0.65"
+            android:pathData="M53,33 L52.5,71 M55,33 L55.5,71" />
+        <!-- The pair of f-holes. -->
+        <path android:strokeColor="#58301F" android:strokeWidth="1.25" android:strokeLineCap="round"
+            android:pathData="M48,58 C45,58 48,64 44.5,66 M63.5,58 C60,58 63,64 60,66" />
+    </group>
+</vector>

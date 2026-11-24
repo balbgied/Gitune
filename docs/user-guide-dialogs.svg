@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="320" viewBox="0 0 880 320">
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L7 4L0 8Z" fill="#81edd0"/></marker></defs>
+  <rect width="880" height="320" rx="16" fill="#141d24"/>
+  <g font-family="system-ui,sans-serif" fill="#f1f6f7">
+    <text x="28" y="38" font-size="20" font-weight="bold">Android microphone permission</text>
+    <text x="465" y="38" font-size="20" font-weight="bold">Gtuner delete confirmation</text>
+    <rect x="28" y="70" width="260" height="200" rx="20" fill="#252e38"/>
+    <rect x="465" y="70" width="260" height="200" rx="20" fill="#252e38"/>
+    <g font-size="15">
+      <text x="49" y="106">Allow Gtuner to record audio?</text>
+      <text x="49" y="155" fill="#85f3ce">While using the app</text>
+      <text x="49" y="195" fill="#85f3ce">Only this time</text>
+      <text x="49" y="235" fill="#85f3ce">Don’t allow</text>
+      <text x="485" y="108" font-size="19">Delete recording?</text>
+      <text x="485" y="145">Permanently delete</text>
+      <text x="485" y="167">‘Gtuner … .m4a’ from Music?</text>
+      <text x="485" y="189">This can’t be undone.</text>
+      <text x="593" y="238" fill="#85f3ce">Cancel</text>
+      <text x="657" y="238" fill="#ff6c80">Delete</text>
+    </g>
+    <g fill="none" stroke="#81edd0" stroke-width="1.4" marker-end="url(#arrow)">
+      <path d="M301 151H195"/><path d="M301 191H154"/><path d="M301 231H141"/>
+      <path d="M737 163H690"/><path d="M737 213H619V222"/><path d="M737 250H681V241"/>
+    </g>
+    <g font-size="13"><text x="307" y="155">Allow in session</text><text x="307" y="195">One-time access</text><text x="307" y="235">Keep mic off</text>
+      <text x="743" y="167">File being deleted</text><text x="743" y="216">Keep the file</text><text x="743" y="253">Confirm deletion</text></g>
+    <text x="28" y="296" font-size="12" fill="#b6c6d0">Illustrative dialogs. Android permission wording may vary by device.</text>
+  </g>
+</svg>

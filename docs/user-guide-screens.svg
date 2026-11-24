@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="700" viewBox="0 0 880 700">
+  <defs>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#81edd0"/></marker>
+    <style>text{font-family:system-ui,sans-serif;fill:#f1f6f7} .label{font-size:14px} .sub{font-size:12px;fill:#b6c6d0} .ui{font-family:monospace} .lead path{fill:none;stroke:#81edd0;stroke-width:1.4;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="880" height="700" rx="16" fill="#141d24"/>
+  <text x="34" y="38" font-size="22" font-weight="bold">Jam • live and file playback</text>
+  <text x="470" y="38" font-size="22" font-weight="bold">Tuner</text>
+  <rect x="34" y="62" width="249" height="604" rx="16" fill="#000" stroke="#536976"/>
+  <rect x="470" y="62" width="249" height="604" rx="16" fill="#000" stroke="#536976"/>
+  <g class="ui">
+    <text x="47" y="108" font-size="24" style="fill:#ffd477">112</text>
+    <path d="M103 112l20 -10 19 6 16 -14 26 3" fill="none" stroke="#788598"/>
+    <text x="112" y="102" font-size="19" style="fill:#9deb86">E</text><text x="137" y="102" font-size="19" style="fill:#6dd9f0">G</text><text x="162" y="102" font-size="19" style="fill:#a4a7ff">A</text>
+    <rect x="198" y="79" width="72" height="35" rx="8" fill="none" stroke="#ff6c80"/>
+    <text x="218" y="102" style="fill:#ff6c80">REC</text>
+    <path d="M84 153H270 M84 185H270 M84 217H270 M84 249H270 M84 281H270 M84 313H270 M84 345H270 M84 377H270 M84 409H270 M84 441H270 M84 473H270 M84 505H270" stroke="#fff" stroke-width=".7"/>
+    <g font-size="16"><text x="49" y="159" style="fill:#f397d4">B</text><text x="49" y="191" style="fill:#c494fa">B♭</text><text x="49" y="223" style="fill:#a4a7ff">A</text><text x="49" y="255" style="fill:#80bcfa">A♭</text><text x="49" y="287" style="fill:#6dd9f0">G</text><text x="49" y="319" style="fill:#68e5ca">F♯</text><text x="49" y="351" style="fill:#77e7aa">F</text><text x="49" y="383" style="fill:#9deb86">E</text><text x="49" y="415" style="fill:#d5e97f">E♭</text><text x="49" y="447" style="fill:#f3d773">D</text><text x="49" y="479" style="fill:#f7be7a">C♯</text><text x="49" y="511" style="fill:#ff997d">C</text></g>
+    <g fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray=".1 8"><path d="M94 377q18 2 36 -4" stroke="#9deb86"/><path d="M139 285q18 -5 36 -1 M242 282l24 0" stroke="#6dd9f0"/><path d="M187 221q16 4 46 0" stroke="#a4a7ff"/></g>
+    <path d="M48 548H268" stroke="#526476" stroke-width="5" stroke-linecap="round"/><path d="M48 548H163" stroke="#85f3ce" stroke-width="5"/><rect x="160" y="534" width="5" height="28" rx="2" fill="#85f3ce"/>
+    <rect x="48" y="570" width="80" height="28" rx="7" fill="#1c2830"/><text x="56" y="589" font-size="12" style="fill:#85f3ce">00:00:18</text>
+    <rect x="46" y="611" width="46" height="32" rx="16" fill="none" stroke="#879ba9"/><text x="54" y="632" font-size="12">File</text>
+    <text x="98" y="631" font-size="11" style="fill:#a2b3bc">Gtuner …m4a</text>
+    <path d="M184 619h16m-13 3v12h10v-12m-8-3v-3h6v3" fill="none" stroke="#ff6c80" stroke-width="1.6"/>
+    <path d="M216 618l13 8-13 8z" fill="#85f3ce"/>
+    <path d="M248 617h14v18l-7-5-7 5z m4 6h6m-3-3v6" fill="none" stroke="#85f3ce" stroke-width="1.5"/>
+    <text x="483" y="108" font-size="24" style="fill:#ffd477">112</text>
+    <path d="M539 104l25 -6 24 5 23 -10" fill="none" stroke="#788598"/>
+    <rect x="630" y="79" width="76" height="35" rx="8" fill="#bc223c"/><text x="637" y="102" font-size="13">00:01:23</text>
+    <text x="594" y="267" text-anchor="middle" font-size="80" font-weight="bold">E1</text>
+    <text x="594" y="305" text-anchor="middle" font-size="22" style="fill:#a2b3bc">41.20 Hz</text>
+    <path d="M489 366H699 M489 356v20 M541 361v10 M594 350v32 M646 361v10 M699 356v20" fill="none" stroke="#a2b3bc"/>
+    <path d="M585 341v46" stroke="#fff000" stroke-width="7" stroke-linecap="round"/>
+    <text x="489" y="408" text-anchor="middle" font-size="13">−50¢</text><text x="594" y="408" text-anchor="middle" font-size="23">0</text><text x="699" y="408" text-anchor="middle" font-size="13">+50¢</text>
+    <text x="594" y="448" text-anchor="middle" style="fill:#85f3ce">−5 cents · IN TUNE</text>
+  </g>
+  <g font-size="11" text-anchor="middle">
+    <text x="535" y="500">High mic sensitivity</text><text x="655" y="500">Thick pitch line</text>
+    <rect x="516" y="510" width="38" height="23" rx="12" fill="#85f3ce"/><circle cx="542" cy="521.5" r="7" fill="#274a40"/>
+    <rect x="636" y="510" width="38" height="23" rx="12" fill="#85f3ce"/><circle cx="662" cy="521.5" r="7" fill="#274a40"/>
+    <text x="536" y="562">Recording format</text>
+    <rect x="592" y="545" width="43" height="27" rx="6" fill="#294039"/><text x="614" y="562">AAC</text>
+    <rect x="643" y="545" width="43" height="27" rx="6" fill="none" stroke="#879ba9"/><text x="664" y="562">WAV</text>
+    <text x="594" y="594" font-size="15" style="fill:#85f3ce">A4 = 440 Hz</text>
+    <path d="M489 613H699" stroke="#526476" stroke-width="5" stroke-linecap="round"/><path d="M489 613H592" stroke="#85f3ce" stroke-width="5"/><rect x="589" y="600" width="5" height="26" rx="2" fill="#85f3ce"/>
+    <text x="594" y="649" font-size="10" style="fill:#a2b3bc">Giedrius Balbieris &lt;metagi@gmail.com&gt;</text>
+  </g>
+  <g class="lead">
+    <path d="M301 78H291L279 69H76L67 88"/><path d="M301 132H285L254 122H146V109"/><path d="M301 180H292L235 116"/>
+    <path d="M301 244H287L252 251"/><path d="M301 302H288L242 286"/>
+    <path d="M301 540H274L167 548"/><path d="M301 570H282L132 584"/>
+    <path d="M301 602H284L92 605L70 611"/><path d="M301 625H286L202 626"/><path d="M301 649H282L226 633"/><path d="M301 676H280L255 637"/>
+    <path d="M737 91H710"/><path d="M737 238H665L637 245"/><path d="M737 300H663"/><path d="M737 345H707L592 349"/>
+    <path d="M737 442H683"/><path d="M737 477H715L538 482L533 489"/><path d="M737 513H689L676 520"/>
+    <path d="M737 553H691"/><path d="M737 602H711L602 613"/><path d="M737 649H694"/>
+  </g>
+  <g class="label">
+    <text x="305" y="81">Estimated BPM</text><text x="305" y="135">Frequent notes</text><text x="305" y="151" class="sub">and tempo history</text>
+    <text x="305" y="183">Record / stop</text><text x="305" y="247">White tuning guides</text><text x="305" y="305">Detected pitch dots</text><text x="305" y="321" class="sub">Newest at the right</text>
+    <text x="305" y="543">Playback position</text><text x="305" y="573">Saved bookmark</text><text x="305" y="605">Choose file / name</text><text x="305" y="628">Delete file</text><text x="305" y="652">Play / pause</text><text x="305" y="679">Add bookmark</text>
+    <text x="741" y="94">Recording timer</text><text x="741" y="241">Note and octave</text><text x="741" y="303">Frequency</text><text x="741" y="348">Pitch needle</text><text x="741" y="364" class="sub">Flat ← 0 → Sharp</text>
+    <text x="741" y="445">Cents and status</text><text x="741" y="480">Mic sensitivity</text><text x="741" y="516">Graph dot size</text><text x="741" y="556">File format</text><text x="741" y="605">A4 reference</text><text x="741" y="652">Contact</text>
+  </g>
+</svg>
