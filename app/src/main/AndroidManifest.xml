@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <application android:label="Gtuner" android:icon="@mipmap/ic_launcher" android:allowBackup="false"
+    <application android:label="Gitune" android:icon="@mipmap/ic_launcher" android:allowBackup="false"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>

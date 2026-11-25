@@ -3,17 +3,17 @@
   <rect width="880" height="320" rx="16" fill="#141d24"/>
   <g font-family="system-ui,sans-serif" fill="#f1f6f7">
     <text x="28" y="38" font-size="20" font-weight="bold">Android microphone permission</text>
-    <text x="465" y="38" font-size="20" font-weight="bold">Gtuner delete confirmation</text>
+    <text x="465" y="38" font-size="20" font-weight="bold">Gitune delete confirmation</text>
     <rect x="28" y="70" width="260" height="200" rx="20" fill="#252e38"/>
     <rect x="465" y="70" width="260" height="200" rx="20" fill="#252e38"/>
     <g font-size="15">
-      <text x="49" y="106">Allow Gtuner to record audio?</text>
+      <text x="49" y="106">Allow Gitune to record audio?</text>
       <text x="49" y="155" fill="#85f3ce">While using the app</text>
       <text x="49" y="195" fill="#85f3ce">Only this time</text>
       <text x="49" y="235" fill="#85f3ce">Don’t allow</text>
       <text x="485" y="108" font-size="19">Delete recording?</text>
       <text x="485" y="145">Permanently delete</text>
-      <text x="485" y="167">‘Gtuner … .m4a’ from Music?</text>
+      <text x="485" y="167">‘Gitune … .m4a’ from Music?</text>
       <text x="485" y="189">This can’t be undone.</text>
       <text x="593" y="238" fill="#85f3ce">Cancel</text>
       <text x="657" y="238" fill="#ff6c80">Delete</text>

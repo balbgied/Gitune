@@ -67,7 +67,7 @@ internal object LiveAudio {
         wanted = enabled
         if (!enabled) { inputReady = false; liveState.value = LiveReadout() }
         if (enabled && capture == null) {
-            capture = Thread({ captureLoop(context.applicationContext) }, "gtuner-mic").also { it.start() }
+            capture = Thread({ captureLoop(context.applicationContext) }, "gitune-mic").also { it.start() }
         }
     }
 
@@ -81,7 +81,7 @@ internal object LiveAudio {
         takeState.value = TakeState(TakePhase.STARTING)
         val writer = RecordingTake(context.applicationContext, format)
         active.set(writer)
-        Thread({ writer.run() }, "gtuner-recording").start()
+        Thread({ writer.run() }, "gitune-recording").start()
     }
 
     fun stop(reason: String = "") {
@@ -107,7 +107,7 @@ internal object LiveAudio {
                 var running = true
                 val alive = AtomicBoolean(true)
                 val silenced = AtomicBoolean(false)
-                val worker = Thread({ analyze(queue, free, alive, silenced) }, "gtuner-analysis")
+                val worker = Thread({ analyze(queue, free, alive, silenced) }, "gitune-analysis")
                 val silencing = object : AudioManager.AudioRecordingCallback() {
                     override fun onRecordingConfigChanged(configs: MutableList<AudioRecordingConfiguration>) {
                         configs.firstOrNull { it.clientAudioSessionId == recorder.audioSessionId }?.let {
@@ -275,7 +275,7 @@ internal object LiveAudio {
 
         fun run() {
             val resolver = context.contentResolver
-            val name = "Gtuner ${SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SSS", Locale.ROOT).format(Date())}.${format.extension}"
+            val name = "Gitune ${SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SSS", Locale.ROOT).format(Date())}.${format.extension}"
             var uri: Uri? = null
             var finalized = false
             try {
