@@ -14,9 +14,9 @@
     <text x="112" y="102" font-size="19" style="fill:#9deb86">E</text><text x="137" y="102" font-size="19" style="fill:#6dd9f0">G</text><text x="162" y="102" font-size="19" style="fill:#a4a7ff">A</text>
     <rect x="198" y="79" width="72" height="35" rx="8" fill="none" stroke="#ff6c80"/>
     <text x="218" y="102" style="fill:#ff6c80">REC</text>
-    <path d="M84 153H270 M84 185H270 M84 217H270 M84 249H270 M84 281H270 M84 313H270 M84 345H270 M84 377H270 M84 409H270 M84 441H270 M84 473H270 M84 505H270" stroke="#fff" stroke-width=".7"/>
-    <g font-size="16"><text x="49" y="159" style="fill:#f397d4">B</text><text x="49" y="191" style="fill:#c494fa">B♭</text><text x="49" y="223" style="fill:#a4a7ff">A</text><text x="49" y="255" style="fill:#80bcfa">A♭</text><text x="49" y="287" style="fill:#6dd9f0">G</text><text x="49" y="319" style="fill:#68e5ca">F♯</text><text x="49" y="351" style="fill:#77e7aa">F</text><text x="49" y="383" style="fill:#9deb86">E</text><text x="49" y="415" style="fill:#d5e97f">E♭</text><text x="49" y="447" style="fill:#f3d773">D</text><text x="49" y="479" style="fill:#f7be7a">C♯</text><text x="49" y="511" style="fill:#ff997d">C</text></g>
-    <g fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray=".1 8"><path d="M94 377q18 2 36 -4" stroke="#9deb86"/><path d="M139 285q18 -5 36 -1 M242 282l24 0" stroke="#6dd9f0"/><path d="M187 221q16 4 46 0" stroke="#a4a7ff"/></g>
+    <path d="M48 153H255 M48 185H255 M48 217H255 M48 249H255 M48 281H255 M48 313H255 M48 345H255 M48 377H255 M48 409H255 M48 441H255 M48 473H255 M48 505H255" stroke="#fff" stroke-width=".7"/>
+    <g font-size="16"><text x="260" y="159" style="fill:#f397d4">B</text><text x="260" y="223" style="fill:#a4a7ff">A</text><text x="260" y="287" style="fill:#6dd9f0">G</text><text x="260" y="351" style="fill:#77e7aa">F</text><text x="260" y="383" style="fill:#9deb86">E</text><text x="260" y="447" style="fill:#f3d773">D</text><text x="260" y="511" style="fill:#ff997d">C</text></g>
+    <g fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray=".1 8"><path d="M64 377q30 2 66 -4" stroke="#9deb86"/><path d="M139 285q18 -5 36 -1 M242 282l10 0" stroke="#6dd9f0"/><path d="M187 221q16 4 46 0" stroke="#a4a7ff"/></g>
     <path d="M48 548H268" stroke="#526476" stroke-width="5" stroke-linecap="round"/><path d="M48 548H163" stroke="#85f3ce" stroke-width="5"/><rect x="160" y="534" width="5" height="28" rx="2" fill="#85f3ce"/>
     <rect x="48" y="570" width="80" height="28" rx="7" fill="#1c2830"/><text x="56" y="589" font-size="12" style="fill:#85f3ce">00:00:18</text>
     <rect x="46" y="611" width="46" height="32" rx="16" fill="none" stroke="#879ba9"/><text x="54" y="632" font-size="12">File</text>
@@ -43,22 +43,24 @@
     <rect x="643" y="545" width="43" height="27" rx="6" fill="none" stroke="#879ba9"/><text x="664" y="562">WAV</text>
     <text x="594" y="594" font-size="15" style="fill:#85f3ce">A4 = 440 Hz</text>
     <path d="M489 613H699" stroke="#526476" stroke-width="5" stroke-linecap="round"/><path d="M489 613H592" stroke="#85f3ce" stroke-width="5"/><rect x="589" y="600" width="5" height="26" rx="2" fill="#85f3ce"/>
-    <text x="594" y="649" font-size="10" style="fill:#a2b3bc">Giedrius Balbieris &lt;metagi@gmail.com&gt;</text>
+    <rect x="481" y="639" width="12" height="12" rx="2" fill="#85f3ce"/><path d="M484 645l2 2 4 -4" fill="none" stroke="#274a40" stroke-width="1.5"/>
+    <text x="518" y="649" style="fill:#85f3ce">Playlist</text>
+    <text x="627" y="649" font-size="8.5" style="fill:#a2b3bc">Giedrius Balbieris &lt;metagi@gmail.com&gt;</text>
   </g>
   <g class="lead">
     <path d="M301 78H291L279 69H76L67 88"/><path d="M301 132H285L254 122H146V109"/><path d="M301 180H292L235 116"/>
-    <path d="M301 244H287L252 251"/><path d="M301 302H288L242 286"/>
+    <path d="M301 214H275"/><path d="M301 244H287L252 251"/><path d="M301 302H288L242 286"/>
     <path d="M301 540H274L167 548"/><path d="M301 570H282L132 584"/>
     <path d="M301 602H284L92 605L70 611"/><path d="M301 625H286L202 626"/><path d="M301 649H282L226 633"/><path d="M301 676H280L255 637"/>
     <path d="M737 91H710"/><path d="M737 238H665L637 245"/><path d="M737 300H663"/><path d="M737 345H707L592 349"/>
     <path d="M737 442H683"/><path d="M737 477H715L538 482L533 489"/><path d="M737 513H689L676 520"/>
-    <path d="M737 553H691"/><path d="M737 602H711L602 613"/><path d="M737 649H694"/>
+    <path d="M737 553H691"/><path d="M737 602H711L602 613"/><path d="M737 628H714L696 645"/><path d="M737 680H521V654"/>
   </g>
   <g class="label">
     <text x="305" y="81">Estimated BPM</text><text x="305" y="135">Frequent notes</text><text x="305" y="151" class="sub">and tempo history</text>
-    <text x="305" y="183">Record / stop</text><text x="305" y="247">White tuning guides</text><text x="305" y="305">Detected pitch dots</text><text x="305" y="321" class="sub">Newest at the right</text>
+    <text x="305" y="183">Record / stop</text><text x="305" y="217">Natural-note labels</text><text x="305" y="247">Tuning guides</text><text x="305" y="305">Detected pitch dots</text><text x="305" y="321" class="sub">Newest at the right</text>
     <text x="305" y="543">Playback position</text><text x="305" y="573">Saved bookmark</text><text x="305" y="605">Choose file / name</text><text x="305" y="628">Delete file</text><text x="305" y="652">Play / pause</text><text x="305" y="679">Add bookmark</text>
     <text x="741" y="94">Recording timer</text><text x="741" y="241">Note and octave</text><text x="741" y="303">Frequency</text><text x="741" y="348">Pitch needle</text><text x="741" y="364" class="sub">Flat ← 0 → Sharp</text>
-    <text x="741" y="445">Cents and status</text><text x="741" y="480">Mic sensitivity</text><text x="741" y="516">Graph dot size</text><text x="741" y="556">File format</text><text x="741" y="605">A4 reference</text><text x="741" y="652">Contact</text>
+    <text x="741" y="445">Cents and status</text><text x="741" y="480">Mic sensitivity</text><text x="741" y="516">Graph dot size</text><text x="741" y="556">File format</text><text x="741" y="605">A4 reference</text><text x="741" y="631">Contact</text><text x="741" y="684">Playlist controls</text>
   </g>
 </svg>
