@@ -33,7 +33,7 @@ Gitune has two screens: **Jam** and **Tuner**. File review lives inside Jam, not
 - **REC / red timer:** Tap **REC** to start a mic recording, then tap the red elapsed-time button to stop. Wait for **Saving** to finish. The take appears below the graph automatically; it does not autoplay.
 - **Pitch graph:** Shows the last eight seconds. New detections appear at the right and move left. A dot above a guide is sharp, a dot below is flat, and a centered dot is in tune. The same note in different octaves shares a row. All twelve semitones are labeled on the right edge. Live Jam and file review can plot up to three dots at the same time. Dimmer dots are hints from strong tonal peaks, including overtones and other instruments, and count toward the note-label brightness. Most hints don’t affect the Tuner needle, but a single strong hint that persists for a few frames can be used as a fallback when the periodicity check is unsure. Blank areas mean there wasn’t enough evidence to plot a note.
 - **Seek slider and bookmarks:** Drag the slider or tap a bookmark to move within the selected file. Tap the bookmark icon to mark the current position (up to four marks per file); long-press a mark to remove it.
-- **File and playback controls:** Tap **File** to open Android’s picker. The filename shows what is selected. **Play/Pause** switches between file playback and live mic display; at the end of playback, the graph also returns to live automatically. While playing, BPM, note-label brightness and pitch dots come from the file, not the mic, using the same multi-note analysis as live Jam. **REC** stops playback and starts a new mic recording.
+- **File and playback controls:** Tap **File** to open Android’s picker. The filename shows what is selected. Selecting the same file again reuses its existing copy in Music/ instead of creating a duplicate. **Play/Pause** switches between file playback and live mic display; at the end of playback, the graph also returns to live automatically. While playing, BPM, note-label brightness and pitch dots come from the file, not the mic, using the same multi-note analysis as live Jam. **REC** stops playback and starts a new mic recording.
 - **Trash:** Opens a confirmation dialog before deleting the recording from storage. For imported files with a linked original, read the dialog carefully: confirmation can delete both the original and the Music copy. If Android blocks deletion of the original, Gitune keeps the copy and reports the problem.
 
 ### Tuner: check a sustained note
@@ -75,7 +75,7 @@ Open the project in Android Studio with **Android SDK Platform 37** installed an
 ./gradlew :app:assembleDebug
 ```
 
-On Windows use `gradlew.bat`. The APK is built at `app/build/outputs/apk/debug/app-debug.apk`. The app uses Kotlin, Jetpack Compose and Android media APIs. Compose previews in `MainActivity.kt` use example data rather than live audio.
+On Windows use `gradlew.bat`. The APK is built at `app/build/outputs/apk/debug/app-debug.apk`. Each push to `main` also builds it as a GitHub Actions artifact named `Gitune-debug-apk`. The app uses Kotlin, Jetpack Compose and Android media APIs. Compose previews in `MainActivity.kt` use example data rather than live audio.
 
 The [working specification](music_analyzer_android_spec_v0.1.md) and [early mockups](docs/prototype) are historical design material, not descriptions of the current interface.
 
