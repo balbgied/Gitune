@@ -274,6 +274,7 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
                             ?: ReviewAudio.copy(context, uri, originalName) { copiedBytes = it }.also {
                                 prefs?.edit()?.putString(importKey, it.toString())?.apply()
                             }
+                        if (destination != uri) prefs?.edit()?.putString("importSource:$destination", uri.toString())?.apply()
                         val storedName = context.contentResolver.query(destination, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
                             if (it.moveToFirst()) it.getString(0) else null
                         }
@@ -379,10 +380,17 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
     val showFileAnalysis = tab == Screen.JAM && playing
     val headerBpm = if (preview) 124 else if (showFileAnalysis) reviewTempo.lastOrNull { it.seconds <= position }?.bpm else live.value.bpm
     deleteTarget?.takeIf { it == selected && !recording }?.let { target ->
-        val sourceKey = remember(target) {
-            prefs?.all?.entries?.singleOrNull { it.key.startsWith("reviewCopy:") && it.value == target }?.key
+        val legacySourceKey = remember(target) {
+            prefs?.all?.entries?.singleOrNull { entry ->
+                val original = entry.key.removePrefix("reviewCopy:")
+                entry.key.startsWith("reviewCopy:") && entry.value == target &&
+                    (original.startsWith("content:") || original.startsWith("file:"))
+            }?.key
         }
-        val source = sourceKey?.removePrefix("reviewCopy:")?.let(Uri::parse)
+        val source = remember(target) {
+            prefs?.getString("importSource:$target", null)?.let(Uri::parse)
+                ?: legacySourceKey?.removePrefix("reviewCopy:")?.let(Uri::parse)
+        }
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
             title = { Text("Delete recording?") },
@@ -406,7 +414,8 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
                                     notice = "Could not delete the original. Reopen it using File to renew access, or delete it in your file manager. The Music copy was kept."
                                     return@launch
                                 }
-                                prefs?.edit()?.remove(sourceKey)?.apply()
+                                prefs?.edit()?.remove("importSource:$target")?.apply()
+                                legacySourceKey?.let { prefs?.edit()?.remove(it)?.apply() }
                             }
                             val deleted = withContext(Dispatchers.IO) { context.contentResolver.delete(uri, null, null) > 0 }
                             if (deleted) {
