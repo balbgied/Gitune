@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 import kotlin.math.abs
 import kotlin.math.log2

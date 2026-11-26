@@ -10,6 +10,8 @@ An offline Android tuner, pitch and tempo monitor, and practice recorder. Built 
 2. Open Gitune and allow microphone access for live tuning and recording. Playback of existing files does not require it.
 3. Swipe between **Jam** and **Tuner**. In Jam, tap **REC** before playing and the red timer to stop. The saved take appears below the graph: tap **Play** to listen back and add bookmarks to passages you want to practise.
 
+Gitune keeps the screen awake while the app is on screen, even when you’re not recording. Your normal screen timeout applies again when you leave Gitune.
+
 The guide below describes the current development build. The latest release APK may not yet include the Playlist controls or updated Jam labels.
 
 **Updating from Gtuner?** Install Gitune over the original GitHub build to keep your settings and bookmarks. Existing recordings keep their filenames; new takes start with `Gitune`.
@@ -26,21 +28,21 @@ Gitune has two screens: **Jam** and **Tuner**. File review lives inside Jam, not
 
 ### Jam: live playing and file review
 
-- **BPM and tempo history:** The number at top left is the estimated beats per minute. The faint trace behind the note names shows recent tempo. A dash means there isn’t a reliable estimate. Try at least four evenly spaced claps or short syllables to check it.
-- **Frequent notes:** The colored names in the header show up to four of the most frequently detected natural notes over roughly the previous ten seconds. Use them as clues to a scale; Gitune does not name the key or scale automatically.
+- **BPM and tempo history:** The number at top left is the estimated beats per minute. The faint trace to its right shows recent tempo. A dash means there isn’t a reliable estimate. Try at least four evenly spaced claps or short syllables to check it.
+- **Note labels:** All twelve semitones are labeled along the right edge of the pitch graph, including B♭, A♭, F♯, E♭, and C♯. Label brightness tracks how often each note was detected over roughly the previous ten seconds: the most frequent notes are brightest, and unused notes fade to black. Use them as clues to a scale; Gitune does not name the key or scale automatically.
 - **REC / red timer:** Tap **REC** to start a mic recording, then tap the red elapsed-time button to stop. Wait for **Saving** to finish. The take appears below the graph automatically; it does not autoplay.
-- **Pitch graph:** Shows the last eight seconds. New detections appear at the right and move left. Each colored dot is one detection, not an interpolated line. Above a guide means sharp, below means flat, and centered means in tune for that note. The same note in different octaves shares a row. Only natural notes (C, D, E, F, G, A, B) are labeled, along the right edge. Sharps and flats still have guides and dots. Blank areas mean no usable pitch was detected.
+- **Pitch graph:** Shows the last eight seconds. New detections appear at the right and move left. A dot above a guide is sharp, a dot below is flat, and a centered dot is in tune. The same note in different octaves shares a row. All twelve semitones are labeled on the right edge. Live Jam and file review can plot up to three dots at the same time. Dimmer dots are hints from strong tonal peaks, including overtones and other instruments, and count toward the note-label brightness. Most hints don’t affect the Tuner needle, but a single strong hint that persists for a few frames can be used as a fallback when the periodicity check is unsure. Blank areas mean there wasn’t enough evidence to plot a note.
 - **Seek slider and bookmarks:** Drag the slider or tap a bookmark to move within the selected file. Tap the bookmark icon to mark the current position (up to four marks per file); long-press a mark to remove it.
-- **File and playback controls:** Tap **File** to open Android’s picker. The filename shows what is selected. **Play/Pause** switches between file playback and live mic display; at the end of playback, the graph also returns to live automatically. While playing, BPM, frequent notes and pitch dots come from the file, not the mic. **REC** stops playback and starts a new mic recording.
+- **File and playback controls:** Tap **File** to open Android’s picker. The filename shows what is selected. **Play/Pause** switches between file playback and live mic display; at the end of playback, the graph also returns to live automatically. While playing, BPM, note-label brightness and pitch dots come from the file, not the mic, using the same multi-note analysis as live Jam. **REC** stops playback and starts a new mic recording.
 - **Trash:** Opens a confirmation dialog before deleting the recording from storage. For imported files with a linked original, read the dialog carefully: confirmation can delete both the original and the Music copy. If Android blocks deletion of the original, Gitune keeps the copy and reports the problem.
 
 ### Tuner: check a sustained note
 
 - **Note and frequency:** Play one note at a time. The large label shows the nearest note (including sharps and flats) and its octave, with measured frequency in hertz beneath it.
 - **Yellow needle and cents:** Left of zero is flat; right is sharp. The reading also shows the signed offset in cents and a status. Gitune reports **IN TUNE** within ±5 cents of center. A semitone is 100 cents.
-- **High mic sensitivity:** On by default. It lowers the live pitch detection threshold by about 18 dB; it does not boost hardware mic gain, recording level or tempo sensitivity. Turn it off if quiet background sounds trigger unwanted detections.
+- **Adaptive pitch sensitivity:** Gitune automatically adjusts the live detection threshold to recent sound levels. This changes pitch analysis only, not microphone gain or recording level. The Tuner needle prefers a clear repeating pitch; when noise prevents a periodic lock, a single sustained tonal peak is confirmed over a few frames and can drive the needle instead.
 - **Thick pitch line:** On by default for 12 dp dots; turn it off for 4 dp dots. It applies to both live and file graphs. Dots are never connected.
-- **Playlist:** Tap **Playlist**, paste a plain-text setlist with one song per line, and tap **Save**. Use the checkbox next to **Playlist** to show or hide the setlist without deleting it. When enabled, the setlist appears in dim gray behind the Jam pitch graph during live playing and playback. About twelve lines fit at once; swipe vertically on the graph for longer lists. Long titles are shortened on screen. The text and checkbox setting stay on the device.
+- **Playlist:** On the **Tuner** screen, tap **Playlist**, paste a plain-text setlist with one song per line, and tap **Save**. Use the checkbox next to **Playlist** to show or hide the setlist without deleting it. When enabled, the setlist appears in dim gray behind the Jam pitch graph during live playing and playback. About twelve lines fit at once; swipe vertically on the graph for longer lists. Long titles are shortened on screen. The text and checkbox setting stay on the device.
 - **Recording format:** **AAC** is the default (mono AAC-LC, 128 kbps, `.m4a`). Choose **WAV** for lossless recording. This affects new takes, not files already saved.
 - **A4 reference:** Adjusts the tuning reference for both screens from 415 to 466 Hz; the default is 440 Hz. The setting is saved.
 
@@ -63,7 +65,7 @@ New recordings are saved to shared **Music/**, where you can find them using And
 3. Tap the red timer to stop. Once the take appears below the graph, tap **Play** and listen for the places that felt uncertain.
 4. Watch where the dots drift above or below their guides. Bookmark difficult passages, then practise them again and compare the next take.
 
-Gitune works best with one clearly audible note at a time. A dense mix, noise or overtones can produce missing or misleading detections. Use the graph to guide your listening, not replace it.
+Use one clearly audible note at a time for precise tuning. Live Jam can suggest a prominent pitch in a mix, but a single phone mic can’t reliably separate your instrument from the band. For feedback on your own playing, place the phone closer to you rather than on the floor. Use the graph to guide your listening, not replace it.
 
 ## Build from source
 

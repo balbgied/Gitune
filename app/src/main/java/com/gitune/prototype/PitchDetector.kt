@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 /** YIN-style period estimator. Input is normalized, uniformly sampled mono PCM. */
 internal class PitchDetector(private val rate: Int) {

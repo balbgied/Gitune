@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-internal data class PitchPoint(val seconds: Float, val hz: Float?)
+internal data class PitchPoint(val seconds: Float, val hz: Float?, val estimated: Boolean = false)
 internal data class TempoPoint(val seconds: Float, val bpm: Int?)
 internal data class LiveReadout(
     val seconds: Float = 0f, val tunerHz: Float? = null, val bpm: Int? = null,
@@ -42,8 +42,6 @@ internal data class SavedRecording(val uri: Uri, val name: String)
 internal object LiveAudio {
     private const val RATE = 48_000
     private const val CHUNK = 960
-    private const val STANDARD_PITCH_RMS = 0.002
-    private const val HIGH_PITCH_RMS = 0.00025
     private val liveState = MutableStateFlow(LiveReadout())
     val live = liveState.asStateFlow()
     private val takeState = MutableStateFlow(TakeState())
@@ -57,7 +55,6 @@ internal object LiveAudio {
     @Volatile private var wanted = false
     @Volatile private var capture: Thread? = null
     @Volatile private var monitor = false
-    @Volatile var highPitchSensitivity = true
     @Volatile private var inputReady = false
     val ready: Boolean get() = inputReady
     private val active = AtomicReference<RecordingTake?>(null)
@@ -176,7 +173,7 @@ internal object LiveAudio {
                         alive: AtomicBoolean, silenced: AtomicBoolean) {
         val window = FloatArray(800)
         val linear = FloatArray(window.size)
-        val detector = PitchDetector(8_000)
+        val pitchTracker = LivePitchTracker(8_000, window.size)
         val tunerSmoother = TunerSmoother()
         val points = ArrayDeque<PitchPoint>()
         val tempos = ArrayDeque<TempoPoint>()
@@ -193,10 +190,12 @@ internal object LiveAudio {
                     points.add(PitchPoint(last.toFloat() / RATE, null))
                     tempoDetector.reset()
                     tunerSmoother.reset()
+                    pitchTracker.reset()
                 }
                 last = frame.end
                 val seconds = last.toFloat() / RATE
                 var energy = 0.0
+                var pitchSum = 0.0
                 var pcmSum = 0L
                 var pcmSquares = 0L
                 for (i in 0 until frame.count step 6) {
@@ -210,11 +209,14 @@ internal object LiveAudio {
                     pcmSum += sum
                     val value = sum / ((stop - i) * 32768f)
                     energy += value * value
+                    pitchSum += value
                     window[cursor] = value
                     cursor = (cursor + 1) % window.size
                     filled = minOf(window.size, filled + 1)
                 }
-                val loudness = sqrt(energy / ((frame.count + 5) / 6))
+                val groups = (frame.count + 5) / 6
+                val pitchMean = pitchSum / groups
+                val loudness = sqrt((energy / groups - pitchMean * pitchMean).coerceAtLeast(0.0))
                 // Use the full-band signal for tempo (claps lose energy when downsampled).
                 // Subtract the DC component so a bias in the mic doesn't look like sound.
                 val mean = pcmSum.toDouble() / frame.count
@@ -222,16 +224,14 @@ internal object LiveAudio {
                 free.offer(frame)
                 val bpm = tempoDetector.update(seconds, tempoRms)
                 if (tick++ % 2 != 0) continue
-                // The YIN confidence check still rejects nonperiodic input. This gate
-                // only controls pitch tracking; it doesn't amplify the capture or recording.
-                val pitchGate = if (highPitchSensitivity) HIGH_PITCH_RMS else STANDARD_PITCH_RMS
-                val hz = if (filled == window.size && loudness > pitchGate) {
+                val pitch = if (filled == window.size) {
                     for (i in linear.indices) linear[i] = window[(cursor + i) % window.size]
-                    detector.detect(linear)
-                } else null
-                val tunerHz = tunerSmoother.update(hz)
-                points.add(PitchPoint(seconds, hz))
-                while (points.first().seconds < seconds - 12f) points.removeFirst()
+                    pitchTracker.detect(linear, loudness)
+                } else LivePitch()
+                val tunerHz = tunerSmoother.update(pitch.tunerHz)
+                for (hz in pitch.jamHints) points.add(PitchPoint(seconds, hz, estimated = true))
+                pitch.tunerHz?.let { points.add(PitchPoint(seconds, it)) }
+                while (points.isNotEmpty() && points.first().seconds < seconds - 12f) points.removeFirst()
                 if (tick % 10 == 1) tempos.add(TempoPoint(seconds, bpm))
                 while (tempos.isNotEmpty() && tempos.first().seconds < seconds - 30f) tempos.removeFirst()
                 if (wanted && monitor && !silenced.get()) liveState.value = LiveReadout(seconds, tunerHz, bpm, points.toList(), tempos.toList())

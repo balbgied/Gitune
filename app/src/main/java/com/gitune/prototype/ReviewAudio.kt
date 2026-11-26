@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 import android.content.ContentValues
 import android.content.Context
@@ -160,7 +160,7 @@ internal object ReviewAudio {
     private class PcmPlot(private val start: Float) {
         private val samples = FloatArray(800)
         private val window = FloatArray(800)
-        private val detector = PitchDetector(8000)
+        private val pitchTracker = LivePitchTracker(8000, 800)
         private var cursor = 0
         private var count = 0
         private var accumulator = 0
@@ -224,13 +224,19 @@ internal object ReviewAudio {
                 cursor = (cursor + 1) % samples.size
                 count++
                 if (count < samples.size || count % 400 != 0) continue
-                var power = 0f
+                var power = 0.0
+                var windowSum = 0.0
                 for (j in window.indices) {
                     val value = samples[(cursor + j) % samples.size]
                     window[j] = value
-                    power += value * value
+                    power += value.toDouble() * value
+                    windowSum += value
                 }
-                result.add(PitchPoint(time, if (power / window.size > 0.000004f) detector.detect(window) else null))
+                val windowMean = windowSum / window.size
+                val rms = sqrt((power / window.size - windowMean * windowMean).coerceAtLeast(0.0))
+                val pitch = pitchTracker.detect(window, rms)
+                for (hz in pitch.jamHints) result.add(PitchPoint(time, hz, estimated = true))
+                pitch.tunerHz?.let { result.add(PitchPoint(time, it)) }
             }
             return result to tempos
         }

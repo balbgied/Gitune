@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 import android.media.AudioFormat
 import android.media.MediaCodec

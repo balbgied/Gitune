@@ -1,4 +1,4 @@
-package com.gtuner.prototype
+package com.gitune.prototype
 
 import android.Manifest
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import android.view.WindowInsets as AndroidWindowInsets
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +21,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -38,6 +41,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -46,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -67,6 +72,7 @@ import kotlinx.coroutines.withContext
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
@@ -84,7 +90,7 @@ private val TunerYellow = Color(0xFFFFF000)
 private val Rec = Color(0xFFBC223C)
 private val RecText = Color(0xFFFF6C80)
 private val notes = listOf("C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B")
-private val prominentNotes = listOf(4, 9, 7, 2)
+private val prominentNotes = listOf(4, 9, 7, 2, 10, 6, 1, 3)
 private val accents = listOf(0xFFFF997D, 0xFFF7BE7A, 0xFFF3D773, 0xFFD5E97F, 0xFF9DEB86, 0xFF77E7AA,
     0xFF68E5CA, 0xFF6DD9F0, 0xFF80BCFA, 0xFFA4A7FF, 0xFFC494FA, 0xFFF397D4).map { Color(it) }
 
@@ -122,10 +128,31 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
     var a4 by rememberSaveable { mutableIntStateOf(prefs?.getInt("a4", 440) ?: 440) }
     var recordingFormatName by rememberSaveable { mutableStateOf(prefs?.getString("recordingFormat", null) ?: RecordingFormat.AAC.name) }
     val recordingFormat = RecordingFormat.entries.firstOrNull { it.name == recordingFormatName } ?: RecordingFormat.AAC
-    var highPitchSensitivity by rememberSaveable { mutableStateOf(prefs?.getBoolean("highPitchSensitivity", true) ?: true) }
     var thickPitchLine by rememberSaveable { mutableStateOf(prefs?.getBoolean("thickPitchLine", true) ?: true) }
-    LaunchedEffect(highPitchSensitivity, preview) {
-        if (!preview) LiveAudio.highPitchSensitivity = highPitchSensitivity
+    var playlist by remember { mutableStateOf(prefs?.getString("playlist", "").orEmpty()) }
+    var showPlaylist by rememberSaveable { mutableStateOf(prefs?.getBoolean("showPlaylist", true) ?: true) }
+    var playlistDraft by rememberSaveable { mutableStateOf<String?>(null) }
+    playlistDraft?.let { draft ->
+        AlertDialog(
+            onDismissRequest = { playlistDraft = null },
+            title = { Text("Playlist") },
+            text = {
+                OutlinedTextField(
+                    value = draft, onValueChange = { playlistDraft = it },
+                    label = { Text("Playlist text") },
+                    supportingText = { Text("Paste one line per song. Save empty to hide the playlist.") },
+                    modifier = Modifier.fillMaxWidth(), minLines = 4, maxLines = 8
+                )
+            },
+            dismissButton = { TextButton(onClick = { playlistDraft = null }) { Text("Cancel") } },
+            confirmButton = {
+                TextButton(onClick = {
+                    playlist = draft.trim()
+                    prefs?.edit()?.putString("playlist", playlist)?.apply()
+                    playlistDraft = null
+                }) { Text("Save") }
+            }
+        )
     }
     var notice by rememberSaveable { mutableStateOf("") }
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
@@ -398,17 +425,15 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
             }
         )
     }
-    val topNotes by remember(live, a4, preview, showFileAnalysis) { derivedStateOf {
-        if (preview) prominentNotes else {
+    val noteCounts by remember(live, a4, preview, showFileAnalysis) { derivedStateOf {
+        if (preview) {
+            val counts = IntArray(12)
+            prominentNotes.forEachIndexed { index, note -> counts[note] = prominentNotes.size - index }
+            counts.toList()
+        } else {
             val end = if (showFileAnalysis) position else live.value.seconds
             val points = if (showFileAnalysis) reviewPoints else live.value.pitch
-            val counts = IntArray(12)
-            for (point in points.asReversed()) {
-                if (point.seconds > end) continue
-                if (point.seconds < end - 10f) break
-                point.hz?.let { counts[Math.floorMod(midi(it, a4).roundToInt(), 12)]++ }
-            }
-            counts.indices.filter { counts[it] > 1 }.sortedByDescending { counts[it] }.take(4)
+            countNotes(points, end, a4).toList()
         }
     } }
     val micMessage by remember(live) { derivedStateOf { live.value.message } }
@@ -426,8 +451,8 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
         val screen = Screen.entries[page % screenCount]
         Column(Modifier.fillMaxSize().padding(start = 8.dp, end = 8.dp, top = if (screen == Screen.JAM) 0.dp else 4.dp, bottom = 4.dp)) {
             val fileGraph = screen == Screen.JAM && playing
-            LiveHeader(take.phase, elapsed, showNotes = screen == Screen.JAM, bpm = headerBpm,
-                topNotes = topNotes, tempo = { if (fileGraph) reviewTempo else live.value.tempo },
+            LiveHeader(take.phase, elapsed, bpm = headerBpm,
+                tempo = { if (fileGraph) reviewTempo else live.value.tempo },
                 time = { if (fileGraph) position else live.value.seconds }, preview = preview) {
                 if (!preview && !choosing && importJob == null) {
                     if (recording) LiveAudio.stop()
@@ -446,22 +471,12 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
                 Screen.TUNER -> {
                     Tuner(Modifier.weight(1f), a4, if (preview) 41.30f else live.value.tunerHz)
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("High mic sensitivity", color = Text, fontSize = 14.sp)
-                                Switch(checked = highPitchSensitivity, onCheckedChange = {
-                                    highPitchSensitivity = it
-                                    prefs?.edit()?.putBoolean("highPitchSensitivity", it)?.apply()
-                                }, modifier = Modifier.semantics { contentDescription = "High mic sensitivity for Jam and Tuner" })
-                            }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Thick pitch line", color = Text, fontSize = 14.sp)
-                                Switch(checked = thickPitchLine, onCheckedChange = {
-                                    thickPitchLine = it
-                                    prefs?.edit()?.putBoolean("thickPitchLine", it)?.apply()
-                                }, modifier = Modifier.semantics { contentDescription = "Thick pitch line" })
-                            }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text("Thick pitch line", color = Text, fontSize = 14.sp)
+                            Switch(checked = thickPitchLine, onCheckedChange = {
+                                thickPitchLine = it
+                                prefs?.edit()?.putBoolean("thickPitchLine", it)?.apply()
+                            }, modifier = Modifier.semantics { contentDescription = "Thick pitch line" })
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                             Text("Recording format", color = Text, fontSize = 14.sp)
@@ -479,15 +494,27 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
                             valueRange = 415f..466f, steps = 50,
                             modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth().padding(horizontal = 12.dp)
                                 .semantics { contentDescription = "A4 reference in hertz" })
-                        Text("Giedrius Balbieris <metagi@gmail.com>",
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            color = Muted, fontSize = 12.sp, textAlign = TextAlign.Center)
+                        FlowRow(Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                            verticalArrangement = Arrangement.Center,
+                            itemVerticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = showPlaylist, onCheckedChange = {
+                                showPlaylist = it
+                                prefs?.edit()?.putBoolean("showPlaylist", it)?.apply()
+                            }, modifier = Modifier.semantics { contentDescription = "Show playlist in Jam" })
+                            TextButton(onClick = { playlistDraft = playlist }) { Text("Playlist") }
+                            Text("Giedrius Balbieris <metagi@gmail.com>",
+                                modifier = Modifier.padding(horizontal = 4.dp),
+                                color = Muted, fontSize = 12.sp, lineHeight = 14.sp,
+                                textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                        }
                     }
                 }
                 Screen.JAM -> {
                     val canReview = !recording && !pendingRecord && !deleting && (preview || player != null)
                     PitchPlot(Modifier.weight(1f), { if (fileGraph) position else if (preview) 17f else live.value.seconds }, a4,
-                        brightNotes = topNotes, thickPitchLine = thickPitchLine, preview = preview,
+                        noteCounts = noteCounts, thickPitchLine = thickPitchLine, playlist = playlist.takeIf { showPlaylist }.orEmpty(),
+                        preview = preview,
                         points = { if (fileGraph) reviewPoints else live.value.pitch })
                     Slider(value = position.coerceIn(0f, duration.coerceAtLeast(1f)), onValueChange = { seek(it) },
                          valueRange = 0f..duration.coerceAtLeast(1f), enabled = canReview,
@@ -580,7 +607,7 @@ private fun ReviewIconButton(label: String, enabled: Boolean, onClick: () -> Uni
 }
 
 @Composable
-private fun LiveHeader(phase: TakePhase, elapsed: Int, showNotes: Boolean, bpm: Int?, topNotes: List<Int>,
+private fun LiveHeader(phase: TakePhase, elapsed: Int, bpm: Int?,
                        tempo: () -> List<TempoPoint>, time: () -> Float, preview: Boolean, toggle: () -> Unit) {
     val recording = phase == TakePhase.RECORDING
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
@@ -589,10 +616,9 @@ private fun LiveHeader(phase: TakePhase, elapsed: Int, showNotes: Boolean, bpm: 
             contentDescription = bpm?.let { "$it beats per minute" } ?: "Tempo unavailable"
         },
             color = Color(0xFFFFD477), fontFamily = FontFamily.Monospace, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-        BoxWithConstraints(Modifier.weight(1f).height(if (showNotes) 62.dp else 48.dp)) {
-            val noteSize = minOf(maxHeight.value * 0.88f, maxWidth.value / (topNotes.sumOf { notes[it].length }.coerceAtLeast(1) * 0.67f)).sp
+        Box(Modifier.weight(1f).height(48.dp)) {
             Canvas(Modifier.fillMaxSize()) {
-                val color = if (showNotes) Muted.copy(alpha = 0.5f) else Muted
+                val color = Muted
                 if (preview) {
                     fun y(j: Int) = size.height * (0.55f - 0.17f * sin(j * 0.25f) - 0.07f * sin(j * 0.8f))
                     for (i in 1..34) drawLine(color, Offset(size.width * (i - 1) / 34, y(i - 1)),
@@ -609,12 +635,6 @@ private fun LiveHeader(phase: TakePhase, elapsed: Int, showNotes: Boolean, bpm: 
                         previous = next
                     }
                 }
-            }
-            if (showNotes) Row(Modifier.fillMaxWidth().align(Alignment.Center),
-                horizontalArrangement = Arrangement.SpaceEvenly) {
-                for (note in topNotes) Text(notes[note], color = accents[note],
-                    fontSize = noteSize, lineHeight = noteSize, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace,
-                    maxLines = 1, softWrap = false)
             }
         }
         OutlinedButton(onClick = toggle, enabled = phase == TakePhase.IDLE || recording,
@@ -636,34 +656,33 @@ private fun LiveHeader(phase: TakePhase, elapsed: Int, showNotes: Boolean, bpm: 
 }
 
 @Composable
-private fun PitchPlot(modifier: Modifier, time: () -> Float, a4: Int, brightNotes: List<Int> = emptyList(), thickPitchLine: Boolean,
-                      preview: Boolean = false, points: () -> List<PitchPoint> = { emptyList() }) {
+private fun PitchPlot(modifier: Modifier, time: () -> Float, a4: Int, noteCounts: List<Int> = emptyList(), thickPitchLine: Boolean,
+                      playlist: String, preview: Boolean = false, points: () -> List<PitchPoint> = { emptyList() }) {
     BoxWithConstraints(modifier.fillMaxWidth().padding(horizontal = 6.dp)) {
       val labelSize = (maxHeight.value / 12 * 0.79f).coerceIn(12f, 48f)
       Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.width((labelSize * 1.45f).dp).fillMaxHeight()) {
-            for (index in 11 downTo 0) Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                 val bright = index in brightNotes
-                Text(notes[index], color = accents[index].copy(alpha = if (bright) 1f else 0.68f),
-                    fontFamily = FontFamily.Monospace, fontSize = labelSize.sp, lineHeight = labelSize.sp,
-                    fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
-            }
-        }
-        Canvas(Modifier.weight(1f).fillMaxHeight().clipToBounds().semantics { contentDescription = "Scrolling 12-note pitch detections" }) {
+        BoxWithConstraints(Modifier.weight(1f).fillMaxHeight().clipToBounds()) {
+          val hasPlaylist = playlist.isNotBlank()
+          if (hasPlaylist) {
+              val rowHeight = maxHeight / 12
+              PlaylistBackdrop(playlist, rowHeight)
+          }
+          Canvas(Modifier.matchParentSize().semantics { contentDescription = "Scrolling 12-note pitch detections" }) {
             val lane = size.height / 12
             val radius = (if (thickPitchLine) 6.dp else 2.dp).toPx()
             val end = time()
             val start = end - 8f
             fun y(pitch: Float) = size.height - lane * (pitch + 0.5f)
-            fun drawDetection(seconds: Float, midiPitch: Double) {
+            fun drawDetection(seconds: Float, midiPitch: Double, estimated: Boolean = false) {
                 val shifted = midiPitch + 0.5
                 val pitch = (shifted - floor(shifted / 12) * 12 - 0.5).toFloat()
-                drawCircle(accents[Math.floorMod(pitch.roundToInt(), 12)], radius,
+                drawCircle(accents[Math.floorMod(pitch.roundToInt(), 12)].copy(alpha = if (estimated) 0.65f else 1f), radius,
                     Offset((seconds - start) * size.width / 8f, y(pitch)))
             }
             repeat(12) { i ->
                 val center = y(i.toFloat())
-                drawLine(Color.White, Offset(0f, center), Offset(size.width, center), strokeWidth = 1f)
+                drawLine(Color.White.copy(alpha = if (hasPlaylist) 0.22f else 1f),
+                    Offset(0f, center), Offset(size.width, center), strokeWidth = 1f)
             }
             if (preview) {
                 val referenceShift = 12 * log2(a4 / 440.0)
@@ -676,15 +695,47 @@ private fun PitchPlot(modifier: Modifier, time: () -> Float, a4: Int, brightNote
                 }
             } else {
                 val data = points()
-                val index = data.binarySearchBy(start) { it.seconds }.let { if (it < 0) -it - 1 else it }
+                var index = data.binarySearchBy(start) { it.seconds }.let { if (it < 0) -it - 1 else it }
+                while (index > 0 && data[index - 1].seconds == start) index--
                 for (i in index until data.size) {
                     val sample = data[i]
                     if (sample.seconds > end) break
-                    sample.hz?.let { drawDetection(sample.seconds, midi(it, a4)) }
+                    sample.hz?.let { drawDetection(sample.seconds, midi(it, a4), sample.estimated) }
                 }
+            }
+          }
+        }
+        Column(Modifier.fillMaxHeight().padding(start = 3.dp)) {
+            val strongest = noteCounts.maxOrNull() ?: 0
+            for (index in 11 downTo 0) Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                val count = noteCounts.getOrElse(index) { 0 }
+                val brightness = when {
+                    strongest == 0 || count == 0 -> 0f
+                    else -> 0.12f + 0.88f * count / strongest
+                }
+                Text(notes[index], color = accents[index].copy(alpha = brightness),
+                    fontFamily = FontFamily.Monospace, fontSize = labelSize.sp, lineHeight = labelSize.sp,
+                    fontWeight = FontWeight.Bold, maxLines = 1, softWrap = false)
             }
         }
       }
+    }
+}
+
+@Composable
+private fun PlaylistBackdrop(playlist: String, rowHeight: Dp) {
+    val lines = remember(playlist) { playlist.lines() }
+    val fontSize = with(LocalDensity.current) { (rowHeight * 0.78f).toSp() }
+    key(playlist) {
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 6.dp)) {
+            items(lines) { line ->
+                Box(Modifier.fillMaxWidth().height(rowHeight), contentAlignment = Alignment.CenterStart) {
+                    Text(line, color = Color(0xFF757575).copy(alpha = 0.5f), fontSize = fontSize,
+                        lineHeight = fontSize * 1.15f,
+                        fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+        }
     }
 }
 
@@ -730,8 +781,6 @@ private fun Tuner(modifier: Modifier, a4: Int, measured: Float?) {
             fontSize = 23.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
     }
 }
-
-private fun midi(hz: Float, a4: Int) = 69 + 12 * log2(hz.toDouble() / a4)
 
 private fun clock(seconds: Int) = String.format(Locale.ROOT, "%02d:%02d:%02d", seconds / 3600, seconds / 60 % 60, seconds % 60)
 
