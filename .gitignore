@@ -11,3 +11,10 @@ local.properties
 keystore.properties
 .env
 .env.*
+
+# Local audio samples kept for testing, not project documentation
+docs/*.m4a
+docs/*.mp3
+docs/*.wav
+docs/*.flac
+docs/*.aac
