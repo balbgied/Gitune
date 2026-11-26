@@ -22,8 +22,8 @@ jobs:
       - name: Install Android SDK platform 37
         run: |
           export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager --install "platforms;android-37"
+          (yes | sdkmanager --licenses > /dev/null) || true
+          sdkmanager --install "platforms;android-37" || true
       - uses: gradle/actions/setup-gradle@v4
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug
