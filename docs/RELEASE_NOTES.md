@@ -11,7 +11,8 @@ This update adds multi-note analysis, a more reliable tuner, and tempo detection
 
 ## Downloads
 
-- **Debug APK** — the `Gitune-debug-apk` artifact attached to each [GitHub Actions build](https://github.com/balbgied/Gitune/actions/workflows/build.yml). Artifacts expire after 30 days.
-- **Source code** — GitHub’s archives for the matching commit. No `v0.2.0` release tag has been published yet.
+- `Gitune-v0.2.0.apk` — installable Android preview APK (debug-signed).
+- `Gitune-v0.2.0.apk.sha256` — SHA-256 checksum for the APK.
+- **Source code** — GitHub’s archives for the matching `v0.2.0` tag. See the repository README for build instructions and the GPLv3 license.
 
 On Android, open the APK to install it. Install it over an earlier Gitune build to keep your settings, bookmarks and recordings. If your old build was signed with a different key, Android will not install the update over it. Before uninstalling an old build, back up any recordings you want to keep; uninstalling clears in-app settings and bookmarks.
