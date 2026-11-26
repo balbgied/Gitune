@@ -1,5 +1,6 @@
 package com.gitune.prototype
 
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.media.AudioFormat
@@ -31,6 +32,22 @@ internal object ReviewAudio {
     fun savedCopy(context: Context, uri: Uri?): Uri? {
         if (uri == null) return null
         return runCatching { context.contentResolver.openFileDescriptor(uri, "r")?.use { uri } }.getOrNull()
+    }
+
+    /** Find a copy already in Music, even if the picker returned a different document URI. */
+    fun findMusicCopy(context: Context, name: String): Uri? {
+        val selection = "${MediaStore.Audio.Media.DISPLAY_NAME}=? AND ${MediaStore.Audio.Media.RELATIVE_PATH} LIKE ?"
+        val args = arrayOf(name.substringAfterLast('/'), "Music/%")
+        val query = context.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(MediaStore.Audio.Media._ID), selection, args, null
+        ) ?: return null
+        return query.use {
+            if (!it.moveToFirst()) null else ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                it.getLong(it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
+            )
+        }
     }
 
     suspend fun copy(context: Context, source: Uri, name: String, progress: (Long) -> Unit): Uri {

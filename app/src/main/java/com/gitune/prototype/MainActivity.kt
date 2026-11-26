@@ -254,12 +254,23 @@ private fun Prototype(initial: Screen = Screen.JAM, preview: Boolean = false) {
             importJob = scope.launch {
                 try {
                     val (copy, name) = withContext(Dispatchers.IO) {
-                        val originalName = context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
-                            if (it.moveToFirst()) it.getString(0) else null
+                        val metadata = context.contentResolver.query(
+                            uri, arrayOf(OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE), null, null, null
+                        )?.use {
+                            if (it.moveToFirst()) it.getString(0) to it.getLong(1) else null
                         } ?: error("Could not read the filename.")
-                        val importKey = "reviewCopy:$uri"
+                        val (originalName, originalSize) = metadata
+                        // Key the cached copy on file identity, not on the picker URI, which
+                        // changes when the same file is opened from a different location.
+                        val importKey = "reviewCopy:$originalName:$originalSize"
                         val previousCopy = prefs?.getString(importKey, null)?.let(Uri::parse)
                         val destination = ReviewAudio.savedCopy(context, previousCopy)
+                            ?: ReviewAudio.findMusicCopy(context, originalName)?.let { existing ->
+                                if (ReviewAudio.savedCopy(context, existing) == null) null else {
+                                    prefs?.edit()?.putString(importKey, existing.toString())?.apply()
+                                    existing
+                                }
+                            }
                             ?: ReviewAudio.copy(context, uri, originalName) { copiedBytes = it }.also {
                                 prefs?.edit()?.putString(importKey, it.toString())?.apply()
                             }
