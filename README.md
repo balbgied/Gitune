@@ -12,7 +12,7 @@ An offline Android tuner, pitch and tempo monitor, and practice recorder. Built 
 
 Gitune keeps the screen awake while the app is on screen, even when you’re not recording. Your normal screen timeout applies again when you leave Gitune.
 
-The guide below describes the current development build. The latest release APK may not yet include the Playlist controls or updated Jam labels.
+The guide below describes the v0.2.1 build.
 
 **Updating from Gtuner?** Install Gitune over the original GitHub build to keep your settings and bookmarks. Existing recordings keep their filenames; new takes start with `Gitune`.
 

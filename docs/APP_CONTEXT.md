@@ -6,7 +6,7 @@ This is a developer-facing snapshot of the current implementation. For user-faci
 
 - Kotlin package / Android namespace: `com.gitune.prototype`.
 - `applicationId` stays `com.gtuner.prototype`, and the SharedPreferences file stays `gtuner`. This is deliberate: changing either would stop installs from upgrading in place and would lose settings, bookmarks and recordings.
-- `minSdk 30`, `compileSdk`/`targetSdk 37`, versionCode 3 / versionName 0.2.0.
+- `minSdk 30`, `compileSdk`/`targetSdk 37`, versionCode 4 / versionName 0.2.1.
 - Gradle 9.4.1 wrapper, Android Gradle Plugin 9.2, JDK 17+. `gradle.properties` enables the build cache and configuration cache.
 - UI is Jetpack Compose in a two-page `HorizontalPager`: **Jam** and **Tuner**. File review lives inside Jam. The activity sets `FLAG_KEEP_SCREEN_ON` while visible.
 
