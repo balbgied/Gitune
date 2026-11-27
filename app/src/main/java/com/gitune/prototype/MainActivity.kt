@@ -750,7 +750,7 @@ private fun PlaylistBackdrop(playlist: String, rowHeight: Dp) {
         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(horizontal = 6.dp)) {
             items(lines) { line ->
                 Box(Modifier.fillMaxWidth().height(rowHeight), contentAlignment = Alignment.CenterStart) {
-                    Text(line, color = Color(0xFF757575).copy(alpha = 0.5f), fontSize = fontSize,
+                    Text(line, color = Color(0xFF9AA0A6).copy(alpha = 0.78f), fontSize = fontSize,
                         lineHeight = fontSize * 1.15f,
                         fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
